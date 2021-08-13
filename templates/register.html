@@ -3,6 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link href="{{ url_for('static', filename='css/signin.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
+    <style>
+        @font-face {
+            font-family: NanumSquare;
+            src: url("{{ url_for('static', filename='/fonts/NanumSquare.ttf') }}");
+        }
+        body {
+            font-family: NanumSquare;
+        }
+    </style>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#7952b3">
     <style>
@@ -11,7 +22,7 @@
             font-family:'Courier New';
         }
     </style>
-    <link href="/css/signin.css" rel="stylesheet">
+    <link href="/" rel="stylesheet">
 </head>
 <body>
     <main class="form-signin">
@@ -19,7 +30,7 @@
         <h1 class="h3 mb-3 fw-normal text-center">회원가입</h1>
     
         <div class="form-floating">
-            <input type="text" class="form-control" id="userId" name="uid" maxlength="16">
+            <input type="text" class="form-control" id="userId" name="userName" maxlength="16">
             <label for="userId">ID</label>
         </div>
         <div class="form-floating">
@@ -30,6 +41,5 @@
         <h5 class="text-danger"><%= msg %></h3>
         </form>
     </main>
-    <%- include('footer') %> 
 </body>
 </html>

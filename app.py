@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 from importlib import import_module
 import os
-from flask import Flask, render_template, Response, request, session
+from flask import Flask, render_template, Response, request, session, redirect
+from flask.helpers import url_for
 from flask_socketio import SocketIO, send, emit
 import time, threading, json
 from datetime import datetime
@@ -10,7 +11,7 @@ hostname = socket.gethostname()
 
 
 import sqlite3 as sql
-
+conn = sql.connect('cansat.db')
 
 # bmp280 sensor
 import board
@@ -133,7 +134,7 @@ def connect():
 @socketio.on('disconnect')
 def disconnect():
     print(request.remote_addr + ' Disconnected')
-    session.clear()
+    #session.clear()
 
     idx = next((index for (index, item) in enumerate(users) if item['addr'] == request.remote_addr), None)
     user = users[idx]
@@ -154,8 +155,10 @@ def gen(camera):
 # html routes
 @app.route('/')
 def index():
-    """Video streaming home page."""
-    return render_template('index.html', hostname="LittleDev0617")
+    if 'userName' in session:
+        return render_template('index.html', hostname="LittleDev0617")
+    else:
+       return redirect(url_for('login'))
 
 @app.route('/video_feed')
 def video_feed():
@@ -163,12 +166,21 @@ def video_feed():
     return Response(gen(Camera()),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
 
-@app.route('/login')
+@app.route('/login', methods = ['GET','POST'])
 def login():
-    return render_template('login.html')
+    if request.method == 'GET':
+        return render_template('login.html')
+    elif request.method == 'POST':
+        userName = request.form.get('userName')
+        userPw = request.form.get('userPw')
+        cur = conn.execute('select * from users where userName=? and userPw=?',(userName,userPw))
+        r = cur.fetchall()
+        cur.close()
+        print(r[0])
+        return redirect(url_for('index'))
+
 
 # starts socketio server
 if __name__ == '__main__':
-    conn = sql.connect('cansat.db')
 
     socketio.run(app, host='0.0.0.0')
