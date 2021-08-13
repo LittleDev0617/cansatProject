@@ -178,6 +178,7 @@ def login():
         r = cur.fetchall()
         cur.close()
         for user in r:
+            print(user)
             if user['userName'] == 'admin':
                 return redirect(url_for('index'))
         return redirect(url_for('login'))
