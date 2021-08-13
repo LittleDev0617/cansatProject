@@ -11,7 +11,7 @@ hostname = socket.gethostname()
 
 
 import sqlite3 as sql
-conn = sql.connect('cansat.db')
+conn = sql.connect('cansat.db',check_same_thread=False)
 conn.row_factory = sql.Row
 cur = conn.cursor()
 # bmp280 sensor
