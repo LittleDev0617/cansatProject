@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Hello, world!</title>
+  </head>
+  <body>
+    <h1>Raspberry Pi - Surveillance Camera</h1>
+    <button id="mybutton" onclick="send()">클릭</button>
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js" integrity="sha256-yr4fRk/GU1ehYJPAs8P4JlTgu0Hdsp4ZKrx8bDEDC3I=" crossorigin="anonymous"></script>
+    <script type="text/javascript" charset="utf-8">
+      var socket = io()
+      socket.on('connect', function() {
+          socket.emit('message', 'I\'m connected!');
+      })
+
+      socket.on('message', function(msg) {
+        console.log(msg)
+      })
+
+      function send() {
+        console.log('send')
+        socket.emit('message', 'test message')
+      }
+    </script>
+  </body>
+</html>

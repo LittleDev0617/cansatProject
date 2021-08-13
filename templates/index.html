@@ -1,0 +1,417 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/Chart.css') }}">
+    
+    <style>
+      /* Sticky footer styles
+      -------------------------------------------------- */
+      html {
+        position: relative;
+        min-height: 100%;
+      }
+
+      body {
+        background-color: rgba(18, 18, 18, 1);
+        color: white;
+        margin-bottom: 60px;
+      }
+
+      .footer {
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        /* Set the fixed height of the footer here */
+        height: 60px;
+        line-height: 60px; /* Vertically center the text there */
+        background-color: #f5f5f5;
+      }
+
+      /* Custom page CSS
+      -------------------------------------------------- */
+      /* Not required for template or sticky footer method. */
+
+      body > .container {
+        width: 100%;
+        min-height: 90vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding-top: 7vh;      
+      }
+
+      .title {
+        text-align: center;
+        text-transform: uppercase;
+      }
+
+      .chart-values {
+        color:  #9c9c9c;
+        font-size: 0.7rem;
+        text-align: center;
+        padding-top: 10px;
+      }
+
+      .myContent {
+        text-align: center;
+        font-size: 2rem;
+      }
+
+      .userGauge {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .userGauge .gauge-value {
+        position: absolute;
+        top:50%;
+        left:50%;
+        transform: translate(-50%, -50%);  
+        text-align: center;
+        margin-top: 25px;
+      }
+
+      .gauge {
+        max-width: 180%;
+      }
+
+      .footer > .copyright {
+        float: left;
+        padding-right: 30px;
+        padding-left: 30px;
+      }
+
+      .footer > .logo {
+        float: right;
+      }
+
+      .logo img {
+        height: 50px;
+        padding-right: 30px;
+        padding-left: 30px;
+      }
+
+      .card {
+        margin: 10px;
+        padding : 10px;
+        background-color: rgba(36, 36, 36, 1);
+      }
+
+      .card .card-block {
+        white-space: nowrap;
+        padding: 15px;
+      }
+    </style>
+    
+    <title>cansat</title>
+  </head>
+  <body>
+    <header>
+      <!-- Fixed navbar -->
+      <nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark">
+        <div class="container-fluid">
+          <a class="navbar-brand mx-auto title" href="#">{{ hostname }}'s cansat ground station</a>
+        </div>
+      </nav>
+    </header>
+
+    <main role="main" class="container">
+      <div class="row">
+        <div class="col-lg-6 col-md-auto">
+          
+          <div class="row">
+            <div class="col-lg-6">
+              <div class="card">
+                <div class="card-block">
+                  <p class="title">system time</p>
+                  <p class="myContent currentTime"></p>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="card">
+                <div class="card-block">
+                  <p class="title">running time</p>
+                  <p class="myContent runningTime"></p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-block">
+              <p class="title">camera view</p>
+              <img src="{{ url_for('video_feed') }}" class="img-fluid">
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-6 col-md-auto">
+          <div class="card">
+            <div class="row">
+              <div class="col-lg-5">
+                <div class="card-block">
+                  <p class="title">temperature</p>
+                  <div class="userGauge">
+                    <canvas class="gauge" id="gauge-temp"></canvas>
+                    <div class="gauge-value myContent">
+                      <span id="gauge-value-temp"></span>
+                      <span>℃</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-7">
+                <div class="chart-container">
+                  <canvas id="chart-temp"></canvas>
+                  <div class="row chart-values">
+                    <!--div class="col-4">
+                      <span>now : </span>
+                      <span class="current-temp"></span>
+                    </div-->
+                    <div class="col-6">
+                      <span>MIN : </span>
+                      <span class="min-temp"></span>
+                    </div>
+                    <div class="col-6">
+                      <span>MAX : </span>
+                      <span class="max-temp"></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="row">
+              <div class="col-lg-5">
+                <div class="card-block">
+                  <p class="title">pressure</p>
+                  <div class="userGauge">
+                    <canvas class="gauge" id="gauge-pressure"></canvas>
+                    <div class="gauge-value myContent">
+                      <span id="gauge-value-pressure"></span>
+                      <span>hPa</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-7">
+                <div class="chart-container">
+                  <canvas id="chart-pressure"></canvas>
+                  <div class="row chart-values">
+                    <!--div class="col-4">
+                      <p class="current-pressure"></p>
+                    </div-->
+                    <div class="col-6">
+                      <span>MIN : </span>
+                      <span class="min-pressure"></span>
+                    </div>
+                    <div class="col-6">
+                      <span>MAX : </span>
+                      <span class="max-pressure"></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="row">
+              <div class="col-lg-5">
+                <div class="card-block">
+                  <p class="title">altitude</p>
+                  <div class="userGauge">
+                    <canvas class="gauge" id="gauge-altitude"></canvas>
+                    <div class="gauge-value myContent">
+                      <span id="gauge-value-altitude"></span>
+                      <span>m</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-7">
+                <div class="chart-container">
+                  <canvas id="chart-altitude"></canvas>
+                  <div class="row chart-values">
+                    <!--div class="col-4">
+                      <p class="current-altitude"></p>
+                    </div-->
+                    <div class="col-6">
+                      <span>MIN : </span>
+                      <span class="min-altitude"></span>
+                    </div>
+                    <div class="col-6">
+                      <span>MAX : </span>
+                      <span class="max-altitude"></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+      </div>
+    </main>
+
+    <footer class="footer bg-dark">
+      <div class="copyright">
+        <span class="text-muted">© 2020 Naraspace Technology Ltd.</span>
+      </div>
+      <div class="logo">
+        <a href="https://www.naraspacetechnology.com/">
+          <img src="{{ url_for('static', filename='asset/logo.png') }}">
+        </a>
+      </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/jquery-3.5.1.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/popper.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap.bundle.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/socket.io.slim.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/Chart.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/gauge.min.js') }}"></script>
+    <script type="text/javascript" charset="utf-8">
+      var url = `http://${document.domain}:${location.port}`
+      var socket = io.connect(url)
+
+      function userChart(name) {
+        this.dataCount = 50
+        this.data = []
+        this.labels = []
+        this.count = 0
+        this.name = name
+        this.currentValue = 0.0
+        this.minValue = 999999.9
+        this.maxValue = -999999.9
+        this.ctx = $('#chart-' + name)
+        this.chart = new Chart(this.ctx, {
+          type: 'line',
+          data: {
+            labels: this.labels,
+            datasets: [{
+              data: this.data,
+              fill: false,
+              lineTension: 0,
+              borderWidth: 3,
+              borderColor: 'rgba(255, 99, 132, 1)'
+            }],
+          },
+          options: {
+            scales: {
+              xAxes: [{
+                display: false
+              }],
+              yAxes: [{
+                display: true
+              }],
+            },
+            elements: {
+              point:{
+                radius: 0
+              }
+            },
+            legend: {
+              display: false,
+            },
+            animation: {
+              duration: 0
+            }
+          }
+        })
+      }
+
+      userChart.prototype.update = function(data) {
+        this.currentValue = data
+        if(data < this.minValue) this.minValue = data
+        if(data > this.maxValue) this.maxValue = data
+        this.count++
+
+        this.labels.push(this.count)
+        if(this.labels.length > this.dataCount) this.labels.shift()
+        
+        this.data.push(data)
+        if(this.data.length > this.dataCount) this.data.shift()
+
+        this.chart.data.datasets[0].data = this.data
+        this.chart.update()
+
+        $('.current-' + this.name).text(this.currentValue.toFixed(2))
+        $('.min-' + this.name).text(this.minValue.toFixed(2))
+        $('.max-' + this.name).text(this.maxValue.toFixed(2))
+      }
+
+      var tempChart = new userChart('temp')
+      var pressChart = new userChart('pressure')
+      var altChart = new userChart('altitude')
+      
+      function userGauge(name, minVal, maxVal, initVal) {
+        this.name = name
+        this.opts = {
+          angle: 0.08, /// The span of the gauge arc
+          lineWidth: 0.1, // The line thickness
+          pointer: {
+            length: 0, // Relative to gauge radius
+            strokeWidth: 0 // The thickness
+          },
+          colorStart: 'rgba(255, 99, 132, 1)',   // Colors
+          colorStop: 'rgba(255, 99, 132, 1)',    // just experiment with them
+          highDpiSupport: true
+        }
+        this.target = document.getElementById('gauge-' + this.name) // your canvas element
+        this.gauge = new Gauge(this.target).setOptions(this.opts) // create sexy gauge!
+
+        this.gauge.maxValue = maxVal // set max gauge value
+        this.gauge.setMinValue(minVal)  // set min value
+        this.gauge.set(initVal) // set actual value
+        this.gauge.setTextField(document.getElementById('gauge-value-' + this.name))
+      }
+
+      userGauge.prototype.update = function(data) {
+        this.gauge.set(data)
+      }
+
+      var tempGauge = new userGauge('temp', -40, 85, 25)
+      var pressGauge = new userGauge('pressure', 300, 1100, 1000)
+      var altGauge = new userGauge('altitude', -500, 9000, -20)
+
+      socket.on('connect', function() {
+        console.log(`[server connected @] ${url}`)
+      })
+
+      socket.on('disconnect', function(){
+        console.log('disconnected')
+      })
+
+      socket.on('updateTime', function(msg) {
+        $('.currentTime').text(msg)
+      })
+
+      socket.on('runningTime', function(msg) {
+        $('.runningTime').text(msg)
+      })
+
+      socket.on('updateSensVal', function(msg) {
+        var val = JSON.parse(msg)
+
+        tempChart.update(val.temp)
+        pressChart.update(val.pressure)
+        altChart.update(val.altitude)
+
+        tempGauge.update(val.temp)
+        pressGauge.update(val.pressure)
+        altGauge.update(val.altitude)
+      })
+    </script>
+  </body>
+</html>
