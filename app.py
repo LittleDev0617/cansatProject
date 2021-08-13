@@ -177,8 +177,10 @@ def login():
         cur.execute('select * from users where userName=? and userPw=?',(userName,userPw))
         r = cur.fetchall()
         cur.close()
-        print(r[0])
-        return redirect(url_for('index'))
+        for user in r:
+            if user['userName'] == 'admin':
+                return redirect(url_for('index'))
+        return redirect(url_for('login'))
 
 
 # starts socketio server
