@@ -155,6 +155,7 @@ def gen(camera):
 # html routes
 @app.route('/')
 def index():
+    print(session)
     if 'userName' in session:
         return render_template('index.html', hostname="LittleDev0617")
     else:
