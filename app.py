@@ -13,7 +13,6 @@ hostname = socket.gethostname()
 import sqlite3 as sql
 conn = sql.connect('cansat.db',check_same_thread=False)
 conn.row_factory = sql.Row
-cur = conn.cursor()
 # bmp280 sensor
 import board
 # import digitalio # For use with SPI
@@ -174,6 +173,9 @@ def login():
     elif request.method == 'POST':
         userName = request.form.get('userName')
         userPw = request.form.get('userPw')
+        print(userName)
+        print(userPw)
+        cur = conn.cursor() 
         cur.execute('select * from users where userName=? and userPw=?',(userName,userPw))
         r = cur.fetchall()
         print(r)
