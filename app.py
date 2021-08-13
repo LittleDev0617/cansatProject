@@ -189,7 +189,7 @@ def login():
 
 @app.route('/logout')
 def logout():
-    session.pop('username',None)
+    session.pop('userName',None)
     return redirect(url_for('index'))
 
 
