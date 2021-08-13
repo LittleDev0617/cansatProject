@@ -187,6 +187,11 @@ def login():
                 return redirect(url_for('index'))
         return redirect(url_for('login'))
 
+@app.route('logout')
+def logout():
+    session.pop('username',None)
+    return redirect(url_for('index'))
+
 
 # starts socketio server
 if __name__ == '__main__':
