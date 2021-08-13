@@ -174,7 +174,6 @@ def login():
     elif request.method == 'POST':
         userName = request.form.get('userName')
         userPw = request.form.get('userPw')
-        print(userPw)
         cur.execute('select * from users where userName=? and userPw=?',(userName,userPw))
         r = cur.fetchall()
         print(r)
