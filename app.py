@@ -5,9 +5,12 @@ from flask import Flask, render_template, Response, request, session
 from flask_socketio import SocketIO, send, emit
 import time, threading, json
 from datetime import datetime
-
 import socket
 hostname = socket.gethostname()
+
+
+import sqlite3 as sql
+
 
 # bmp280 sensor
 import board
@@ -140,18 +143,6 @@ def disconnect():
 
     del users[idx]
 
-# html routes
-@app.route('/')
-def index():
-    """Video streaming home page."""
-    return render_template('index.html', hostname=hostname)
-
-@app.route('/video_feed')
-def video_feed():
-    """Video streaming route. Put this in the src attribute of an img tag."""
-    return Response(gen(Camera()),
-                    mimetype='multipart/x-mixed-replace; boundary=frame')
-
 # camera frame generator
 def gen(camera):
     """Video streaming generator function."""
@@ -160,6 +151,24 @@ def gen(camera):
         yield (b'--frame\r\n'
                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
 
+# html routes
+@app.route('/')
+def index():
+    """Video streaming home page."""
+    return render_template('index.html', hostname="LittleDev0617")
+
+@app.route('/video_feed')
+def video_feed():
+    """Video streaming route. Put this in the src attribute of an img tag."""
+    return Response(gen(Camera()),
+                    mimetype='multipart/x-mixed-replace; boundary=frame')
+
+@app.route('/login')
+def login():
+    return render_template('login.html')
+
 # starts socketio server
 if __name__ == '__main__':
+    conn = sql.connect('cansat.db')
+
     socketio.run(app, host='0.0.0.0')
