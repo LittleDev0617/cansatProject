@@ -11,7 +11,7 @@ hostname = socket.gethostname()
 
 
 import sqlite3 as sql
-conn = sql.connect('~/cansat-gs/cansat.db',check_same_thread=False)
+conn = sql.connect('/home/pi/cansat-gs/cansat.db',check_same_thread=False)
 conn.row_factory = sql.Row
 # bmp280 sensor
 import board
