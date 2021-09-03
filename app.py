@@ -2,7 +2,7 @@
 from importlib import import_module
 from logging import NOTSET
 import os
-from flask import Flask, render_template, Response, request, session, redirect
+from flask import Flask, render_template, Response, request, session, redirect, send_file
 from flask.helpers import url_for
 from flask_socketio import SocketIO, send, emit
 import time, threading, json
@@ -215,6 +215,9 @@ def dataRecordState():
     global isRecording
     return json.dumps({'isRecording' : isRecording})
 
+@app.route('/downloadLogFile')
+def downloadLogFile():
+    return send_file('/home/pi/dataLog.csv')
 
 @app.route('/login', methods = ['GET','POST'])
 def login():
