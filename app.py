@@ -9,6 +9,7 @@ import time, threading, json
 from datetime import datetime
 import socket
 import os
+import datetime
 hostname = socket.gethostname()
 
 
@@ -169,13 +170,13 @@ class Logger(threading.Thread):
             if isRecording:
                 if not os.path.isfile(self.logfileName):
                     with open(self.logfileName,'w') as f:
-                        f.write('Temperature,Pressure,Altitude\n')
+                        f.write('Date,Temperature,Pressure,Altitude\n')
                 else:
                     with open(self.logfileName,'a') as f:
                         temp = bmp180.read_temperature()
                         pressure = bmp180.read_pressure() / 100
                         altitude = bmp180.read_altitude()
-                        f.write('%d,%d,%d\n' % (temp,pressure,altitude))
+                        f.write('%s,%d,%d,%d\n' % (datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'),temp,pressure,altitude))
             else:
                 break
             time.sleep(self.sleep)

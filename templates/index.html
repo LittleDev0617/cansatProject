@@ -294,7 +294,7 @@
         fetch('/dataRecordState').then(res => {
           return res.json();
         }).then(data =>{
-          if(data['isRecording']) {
+          if(!data['isRecording']) {
             $('.recordBtn').removeClass('btn-success').addClass('btn-danger');
             $('.recordBtn').text('Start Recording');
           }
