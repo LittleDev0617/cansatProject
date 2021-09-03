@@ -197,13 +197,16 @@ def video_feed():
 def dataRecord():
     global isRecording
     global logger
-    state = request.args.get('state',False)
-    isRecording = state
+
+    isRecording = not isRecording
     if isRecording:
         logger = Logger('logger', 'dataLog.csv',5)
         logger.start()
     else:
         logger.join()
+    return json.dumps({'isRecording' : isRecording})
+
+@app.route('/dataRecord')
 
 @app.route('/login', methods = ['GET','POST'])
 def login():
