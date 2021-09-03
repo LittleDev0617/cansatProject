@@ -176,7 +176,7 @@ class Logger(threading.Thread):
                         temp = bmp180.read_temperature()
                         pressure = bmp180.read_pressure() / 100
                         altitude = bmp180.read_altitude()
-                        f.write('%s,%d,%d,%d\n' % (datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'),temp,pressure,altitude))
+                        f.write('%s,%d,%d,%d\n' % (datetime.now().strftime('%Y-%m-%d %H:%M:%S'),temp,pressure,altitude))
             else:
                 break
             time.sleep(self.sleep)
