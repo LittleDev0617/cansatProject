@@ -8,9 +8,10 @@ from flask_socketio import SocketIO, send, emit
 import time, threading, json
 from datetime import datetime
 import socket
+
 import os
 hostname = socket.gethostname()
-
+logFilePath = logFiilePath
 
 import sqlite3 as sql
 conn = sql.connect('/home/pi/cansat-gs/cansat.db',check_same_thread=False)
@@ -201,10 +202,11 @@ def video_feed():
 def dataRecord():
     global isRecording
     global logger
-
+    global logFilePath
+    
     isRecording = not isRecording
     if isRecording:
-        logger = Logger('logger', '/home/pi/dataLog.csv',5)
+        logger = Logger('logger', logFilePath,5)
         logger.start()
     else:
         logger.join()
@@ -217,7 +219,7 @@ def dataRecordState():
 
 @app.route('/logFile')
 def logFile():
-    with open('/home/pi/dataLog.csv','r') as f:
+    with open(logFilePath,'r') as f:
         return '<br />'.join(f.readlines())
 
 @app.route('/login', methods = ['GET','POST'])
