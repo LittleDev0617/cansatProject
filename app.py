@@ -10,9 +10,9 @@ from datetime import datetime
 import socket
 
 import os
-hostname = socket.gethostname()
 logFilePath = '/home/pi/dataLog.csv'
 
+hostname = socket.gethostname()
 import sqlite3 as sql
 conn = sql.connect('/home/pi/cansat-gs/cansat.db',check_same_thread=False)
 conn.row_factory = sql.Row
@@ -185,7 +185,7 @@ class Logger(threading.Thread):
 def video_feed():
     if not 'userName' in session:       
        return redirect(url_for('login'))
-       
+
     """Video streaming route. Put this in the src attribute of an img tag."""
     return Response(gen(Camera()),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
