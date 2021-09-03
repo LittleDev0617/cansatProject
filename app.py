@@ -218,7 +218,7 @@ def dataRecordState():
 @app.route('/logFile')
 def logFile():
     with open('/home/pi/dataLog.csv','r') as f:
-        return ''.join(f.readlines())
+        return '\n'.join(f.readlines())
 
 @app.route('/login', methods = ['GET','POST'])
 def login():
