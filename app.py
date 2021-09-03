@@ -181,6 +181,14 @@ class Logger(threading.Thread):
                 break
             time.sleep(self.sleep)
 
+@app.route('/video_feed')
+def video_feed():
+    if not 'userName' in session:       
+       return redirect(url_for('login'))
+       
+    """Video streaming route. Put this in the src attribute of an img tag."""
+    return Response(gen(Camera()),
+                    mimetype='multipart/x-mixed-replace; boundary=frame')
 
 # html routes
 @app.route('/')
@@ -192,14 +200,12 @@ def index():
     else:
        return redirect(url_for('login'))
 
-@app.route('/video_feed')
-def video_feed():
-    """Video streaming route. Put this in the src attribute of an img tag."""
-    return Response(gen(Camera()),
-                    mimetype='multipart/x-mixed-replace; boundary=frame')
 
 @app.route('/dataRecord')
 def dataRecord():
+    if not 'userName' in session:       
+       return redirect(url_for('login'))
+
     global isRecording
     global logger
     global logFilePath
@@ -214,11 +220,16 @@ def dataRecord():
 
 @app.route('/dataRecordState')
 def dataRecordState():
+    if not 'userName' in session:       
+       return redirect(url_for('login'))
     global isRecording
     return json.dumps({'isRecording' : isRecording})
 
 @app.route('/logFile')
 def logFile():
+    if not 'userName' in session:       
+       return redirect(url_for('login'))
+
     with open(logFilePath,'r') as f:
         return '<br />'.join(f.readlines())
 
