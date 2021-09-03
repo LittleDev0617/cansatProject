@@ -204,7 +204,7 @@ def dataRecord():
 
     isRecording = not isRecording
     if isRecording:
-        logger = Logger('logger', '/home/pi/dataLog.csv',1)
+        logger = Logger('logger', '/home/pi/dataLog.csv',5)
         logger.start()
     else:
         logger.join()
@@ -215,9 +215,10 @@ def dataRecordState():
     global isRecording
     return json.dumps({'isRecording' : isRecording})
 
-@app.route('/downloadLogFile')
-def downloadLogFile():
-    return send_file('/home/pi/dataLog.csv')
+@app.route('/logFile')
+def logFile():
+    with open('/home/pi/dataLog.csv','r') as f:
+        return f.readlines()
 
 @app.route('/login', methods = ['GET','POST'])
 def login():
