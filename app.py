@@ -210,7 +210,7 @@ def dataRecord():
 @app.route('/dataRecordState')
 def dataRecordState():
     global isRecording
-    return str(isRecording)
+    return json.dumps({'isRecording' : isRecording})
 
 
 @app.route('/login', methods = ['GET','POST'])
