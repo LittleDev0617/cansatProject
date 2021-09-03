@@ -166,7 +166,7 @@ class Logger(threading.Thread):
     def run(self):
         global isRecording
         if isRecording:
-            if os.path.isfile(self.logfileName):
+            if not os.path.isfile(self.logfileName):
                 with open(self.logfileName,'w') as f:
                     f.write('Temperature,Pressure,Altitude\n')
             else:
