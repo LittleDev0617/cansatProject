@@ -207,7 +207,10 @@ def dataRecord():
         logger.join()
     return json.dumps({'isRecording' : isRecording})
 
-@app.route('/dataRecord')
+@app.route('/dataRecordState')
+def dataRecordState():
+    return str(isRecording)
+
 
 @app.route('/login', methods = ['GET','POST'])
 def login():
