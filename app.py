@@ -181,9 +181,10 @@ class Logger(threading.Thread):
 # html routes
 @app.route('/')
 def index():
+    global isRecording
     print(session)
     if 'userName' in session:
-        return render_template('index.html', hostname="LittleDev0617")
+        return render_template('index.html', hostname="LittleDev0617",isRecording=isRecording)
     else:
        return redirect(url_for('login'))
 
