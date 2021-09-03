@@ -9,7 +9,6 @@ import time, threading, json
 from datetime import datetime
 import socket
 import os
-import datetime
 hostname = socket.gethostname()
 
 
