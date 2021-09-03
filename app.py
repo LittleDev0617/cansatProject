@@ -165,17 +165,20 @@ class Logger(threading.Thread):
     
     def run(self):
         global isRecording
-        if isRecording:
-            if not os.path.isfile(self.logfileName):
-                with open(self.logfileName,'w') as f:
-                    f.write('Temperature,Pressure,Altitude\n')
+        while True:
+            if isRecording:
+                if not os.path.isfile(self.logfileName):
+                    with open(self.logfileName,'w') as f:
+                        f.write('Temperature,Pressure,Altitude\n')
+                else:
+                    with open(self.logfileName,'a') as f:
+                        temp = bmp180.read_temperature()
+                        pressure = bmp180.read_pressure() / 100
+                        altitude = bmp180.read_altitude()
+                        f.write('%d,%d,%d\n' % (temp,pressure,altitude))
             else:
-                with open(self.logfileName,'a') as f:
-                    temp = bmp180.read_temperature()
-                    pressure = bmp180.read_pressure() / 100
-                    altitude = bmp180.read_altitude()
-                    f.write('%d,%d,%d\n' % (temp,pressure,altitude))
-        time.sleep(self.sleep)
+                break
+            time.sleep(self.sleep)
 
 
 # html routes
