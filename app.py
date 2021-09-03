@@ -209,6 +209,7 @@ def dataRecord():
 
 @app.route('/dataRecordState')
 def dataRecordState():
+    global isRecording
     return str(isRecording)
 
 

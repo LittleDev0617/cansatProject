@@ -159,11 +159,7 @@
             </div>
           </div>
           <div class="m-2">
-            {% if not isRecording %}
             <button class="btn btn-danger w-100 recordBtn" onclick="dataRecord()">Start Recording</button>
-            {% else %}
-            <button class="btn btn-success w-100 recordBtn" onclick="dataRecord()">Stop Recording</button>
-            {% endif %}
          </div>
         </div>
 
@@ -294,7 +290,21 @@
     <script src="{{ url_for('static', filename='js/Chart.js') }}"></script>
     <script src="{{ url_for('static', filename='js/gauge.min.js') }}"></script>
     <script type="text/javascript" charset="utf-8">     
-
+      function recordState() {
+        fetch('/dataRecordState').then(res => {
+          if(res == "True") {
+            $('.recordBtn').removeClass('btn-success').addClass('btn-danger');
+            $('.recordBtn').text('Start Recording');
+          }
+          else {
+            $('.recordBtn').removeClass('btn-danger').addClass('btn-success');
+            $('.recordBtn').text('Stop Recording');
+          } 
+        });
+      }
+      recordState();
+      
+      
       var url = `http://${document.domain}:${location.port}`
       var socket = io.connect(url)
 
@@ -426,8 +436,9 @@
         altGauge.update(val.altitude)
       })
 
-      function dataRecord()
-      {
+      
+      function dataRecord() {
+        recordState();
         fetch('/dataRecord')
       }
     </script>
