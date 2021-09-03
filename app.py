@@ -201,7 +201,7 @@ def dataRecord():
 
     isRecording = not isRecording
     if isRecording:
-        logger = Logger('logger', 'dataLog.csv',5)
+        logger = Logger('logger', './dataLog.csv',5)
         logger.start()
     else:
         logger.join()

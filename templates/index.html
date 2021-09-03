@@ -292,7 +292,9 @@
     <script type="text/javascript" charset="utf-8">     
       function recordState() {
         fetch('/dataRecordState').then(res => {
-          if(res == "True") {
+          return res.json();
+        }).then(data =>{
+          if(data == "True") {
             $('.recordBtn').removeClass('btn-success').addClass('btn-danger');
             $('.recordBtn').text('Start Recording');
           }
