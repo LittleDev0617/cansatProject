@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 from importlib import import_module
+from logging import NOTSET
 import os
 from flask import Flask, render_template, Response, request, session, redirect
 from flask.helpers import url_for
@@ -7,6 +8,7 @@ from flask_socketio import SocketIO, send, emit
 import time, threading, json
 from datetime import datetime
 import socket
+import os
 hostname = socket.gethostname()
 
 
@@ -40,7 +42,7 @@ import random
 
 # save threads in list for each client session
 users = []
-
+logger = None
 startTime = datetime.now()
 
 app = Flask(__name__)
@@ -48,6 +50,8 @@ app.config['SECRET_KEY'] = 'secret!'
 app.config['TEMPLATES_AUTO_RELOAD'] = True
  # only camera lib works threading mode with socketio
 socketio = SocketIO(app, async_mode="threading")
+
+isRecording = False
 
 def strfdelta(tdelta):
     d = {"D": tdelta.days}
@@ -128,7 +132,7 @@ def connect():
 
     # starts threads
     for th in user['threads']:
-        th.daemon
+        th.daemon = True
         th.start()
 
 @socketio.on('disconnect')
@@ -152,6 +156,28 @@ def gen(camera):
         yield (b'--frame\r\n'
                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
 
+class Logger(threading.Thread):
+    def __init__(self,name,logfileName,sleep):
+        super().__init__()
+        self.name = name
+        self.logfileName = logfileName
+        self.sleep = sleep
+    
+    def run(self):
+        global isRecording
+        if isRecording:
+            if os.path.isfile(self.logfileName):
+                with open(self.logfileName,'w') as f:
+                    f.write('Temperature,Pressure,Altitude\n')
+            else:
+                with open(self.logfileName,'a') as f:
+                    temp = bmp180.read_temperature()
+                    pressure = bmp180.read_pressure() / 100
+                    altitude = bmp180.read_altitude()
+                    f.write('%d,%d,%d\n' % (temp,pressure,altitude))
+        time.sleep(self.sleep)
+
+
 # html routes
 @app.route('/')
 def index():
@@ -166,6 +192,18 @@ def video_feed():
     """Video streaming route. Put this in the src attribute of an img tag."""
     return Response(gen(Camera()),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
+
+@app.route('/dataRecord')
+def dataRecord():
+    global isRecording
+    global logger
+    state = request.args.get('state',False)
+    isRecording = state
+    if isRecording:
+        logger = Logger('logger', 'dataLog.csv',5)
+        logger.start()
+    else:
+        logger.join()
 
 @app.route('/login', methods = ['GET','POST'])
 def login():
