@@ -11,7 +11,7 @@ import socket
 
 import os
 hostname = socket.gethostname()
-logFilePath = logFiilePath
+logFilePath = '/home/pi/dataLog.csv'
 
 import sqlite3 as sql
 conn = sql.connect('/home/pi/cansat-gs/cansat.db',check_same_thread=False)
@@ -203,7 +203,7 @@ def dataRecord():
     global isRecording
     global logger
     global logFilePath
-    
+
     isRecording = not isRecording
     if isRecording:
         logger = Logger('logger', logFilePath,5)
